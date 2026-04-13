@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AttendEase</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1D9E75;--green-d:#0F6E56;--green-l:#E1F5EE;--green-b:#5DCAA5;
+  --blue:#378ADD;--blue-d:#185FA5;--blue-l:#E6F1FB;--blue-b:#85B7EB;
+  --red:#E24B4A;--red-d:#A32D2D;--red-l:#FCEBEB;--red-b:#F09595;
+  --amber:#BA7517;--amber-l:#FAEEDA;--amber-b:#EF9F27;--amber-t:#633806;
+  --bg:#F3F2ED;--card:#fff;--border:rgba(0,0,0,0.08);
+  --border-md:rgba(0,0,0,0.15);--text:#191919;--muted:#686868;
+  --faint:#A8A8A8;--surface:#EEEEE8;--radius:13px;--rsm:9px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem 5rem}
+.app{max-width:520px;margin:0 auto}
+.hdr{text-align:center;margin-bottom:1.5rem}
+.logo{display:inline-flex;align-items:center;gap:9px;margin-bottom:4px}
+.logo-icon{width:36px;height:36px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700}
+.hdr h1{font-size:21px;font-weight:700}
+.hdr p{font-size:13px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.6rem;box-shadow:0 2px 16px rgba(0,0,0,0.05);animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.toggle{display:flex;gap:7px;margin-bottom:1.2rem}
+.tog{flex:1;padding:9px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--surface);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .14s}
+.tog.ab{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
+.tog.ag{background:var(--green-l);border-color:var(--green-b);color:var(--green-d)}
+.ctitle{font-size:18px;font-weight:700;margin-bottom:3px}
+.csub{font-size:13px;color:var(--muted);margin-bottom:1.2rem}
+label{font-size:11px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;margin-top:13px}
+input[type=text],input[type=password],input[type=number]{width:100%;padding:10px 12px;border:1px solid var(--border-md);border-radius:var(--rsm);font-size:14px;font-family:inherit;background:#fff;color:var(--text);transition:border-color .14s,box-shadow .14s}
+input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(29,158,117,.1)}
+.btn{width:100%;padding:11px;margin-top:12px;border-radius:var(--rsm);border:1px solid var(--border-md);background:#fff;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .14s;text-align:center}
+.btn:hover{background:var(--surface)}
+.btn.green{background:var(--green);border-color:var(--green-d);color:#fff}
+.btn.green:hover{background:var(--green-d)}
+.btn.blue{background:var(--blue);border-color:var(--blue-d);color:#fff}
+.btn.blue:hover{background:var(--blue-d)}
+.btn.red{border-color:var(--red-b);color:var(--red-d)}
+.btn.red:hover{background:var(--red-l)}
+.btn.amber{background:var(--amber-l);border-color:var(--amber-b);color:var(--amber-t)}
+.btn.amber:hover{background:#f5dfc0}
+.btn.sm{width:auto;padding:7px 14px;margin-top:0;font-size:12px}
+.btn-row{display:flex;gap:8px;margin-top:12px}
+.btn-row .btn{margin-top:0;flex:1}
+.cap-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:12px 15px;display:flex;align-items:center;justify-content:space-between;margin-top:11px}
+.cap-q{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;letter-spacing:3px;color:var(--text)}
+.cap-ref{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:0;transition:transform .3s}
+.cap-ref:hover{transform:rotate(180deg)}
+.err{color:var(--red-d);font-size:12px;margin-top:8px;padding:8px 12px;background:var(--red-l);border-radius:6px}
+.ok{color:var(--green-d);font-size:12px;margin-top:8px;padding:8px 12px;background:var(--green-l);border-radius:6px}
+.divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0}
+.stitle{font-size:11px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:1.1rem}
+.stat{background:var(--surface);border-radius:var(--rsm);padding:13px;text-align:center}
+.stat-num{font-size:24px;font-weight:700;color:var(--text)}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.pbar{height:6px;border-radius:3px;background:var(--surface);overflow:hidden}
+.pfill{height:100%;border-radius:3px;transition:width .5s ease}
+.plbl{font-size:12px;color:var(--muted);margin-top:5px;margin-bottom:1.2rem}
+.badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.badge.present{background:var(--green-l);color:var(--green-d)}
+.badge.absent{background:var(--red-l);color:var(--red-d)}
+.badge.medical{background:var(--blue-l);color:var(--blue-d)}
+.back-btn{background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;font-family:inherit;padding:0;margin-bottom:1rem;display:flex;align-items:center;gap:4px;transition:color .13s}
+.back-btn:hover{color:var(--text)}
+.slist{max-height:400px;overflow-y:auto;padding-right:2px}
+.slist::-webkit-scrollbar{width:4px}
+.slist::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:2px}
+.no-data{font-size:13px;color:var(--muted);padding:8px 0}
+.info-box{background:var(--amber-l);border:1px solid var(--amber-b);border-radius:var(--rsm);padding:10px 13px;font-size:12px;color:var(--amber-t);margin-bottom:12px}
+
+/* ── STUDENT TICK ITEM ── */
+.stu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--rsm);background:#fff;margin-bottom:6px;transition:all .13s}
+.stu-info{flex:1;min-width:0}
+.stu-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stu-id{font-size:12px;color:var(--muted);margin-top:1px}
+.stu-actions{display:flex;gap:5px;flex-shrink:0}
+.status-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border-md);background:var(--surface);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .13s;flex-shrink:0}
+.status-btn:hover{transform:scale(1.1)}
+.status-btn.active-present{background:var(--green);border-color:var(--green-d);box-shadow:0 0 0 2px var(--green-l)}
+.status-btn.active-absent{background:var(--red);border-color:var(--red-d);box-shadow:0 0 0 2px var(--red-l)}
+.status-btn.active-medical{background:var(--blue);border-color:var(--blue-d);box-shadow:0 0 0 2px var(--blue-l)}
+.stu-item.is-present{border-color:var(--green-b);background:var(--green-l)}
+.stu-item.is-absent{border-color:var(--red-b);background:var(--red-l)}
+.stu-item.is-medical{border-color:var(--blue-b);background:var(--blue-l)}
+.status-label{font-size:11px;font-weight:600;white-space:nowrap}
+.status-label.present{color:var(--green-d)}
+.status-label.absent{color:var(--red-d)}
+.status-label.medical{color:var(--blue-d)}
+
+/* ── HOURS BOX ── */
+.hours-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:14px;margin-top:12px}
+.hours-box .htitle{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)}
+.hours-box .hinfo{font-size:12px;color:var(--muted);margin-bottom:10px}
+.hours-row{display:flex;align-items:center;gap:8px}
+.hours-row input{width:90px;flex-shrink:0}
+
+/* ── INSTRUCTOR NAV ── */
+.inav{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1.3rem}
+.inav-btn{padding:14px 8px;border:1px solid var(--border);border-radius:var(--rsm);background:var(--surface);cursor:pointer;font-family:inherit;text-align:center;transition:all .14s}
+.inav-btn:hover{border-color:var(--border-md);background:#e8e8e2}
+.inav-btn .icon{font-size:22px;margin-bottom:5px}
+.inav-btn .label{font-size:12px;font-weight:500;color:var(--muted)}
+.inav-btn.active-mark{border-color:var(--green-b);background:var(--green-l)}
+.inav-btn.active-mark .label{color:var(--green-d)}
+.inav-btn.active-check{border-color:var(--blue-b);background:var(--blue-l)}
+.inav-btn.active-check .label{color:var(--blue-d)}
+.inav-btn.active-ncc{border-color:var(--amber-b);background:var(--amber-l)}
+.inav-btn.active-ncc .label{color:var(--amber-t)}
+
+/* ── CHECK ATTENDANCE ── */
+.day-card{border:1px solid var(--border);border-radius:var(--rsm);margin-bottom:8px;overflow:hidden}
+.day-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer;background:#fff;transition:background .12s}
+.day-head:hover{background:var(--surface)}
+.day-head-left .day-title{font-size:14px;font-weight:600;color:var(--text)}
+.day-head-left .day-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.day-counts{display:flex;gap:6px;align-items:center}
+.day-body{display:none;padding:10px 14px;background:var(--surface)}
+.day-body.open{display:block}
+.day-stu-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.day-stu-row:last-child{border-bottom:none}
+
+/* ── NCC HOURS TABLE ── */
+.ncc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.ncc-row:last-child{border-bottom:none}
+.ncc-hours{font-size:16px;font-weight:700;color:var(--text)}
+.ncc-hours.positive{color:var(--green-d)}
+.ncc-hours.negative{color:var(--red-d)}
+
+/* ── VERIFY VIEW (student) ── */
+.pct-big{font-size:52px;font-weight:700;line-height:1;text-align:center}
+.pct-lbl{font-size:13px;color:var(--muted);text-align:center;margin-top:4px;margin-bottom:1.2rem}
+.att-entry{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:var(--rsm);border:1px solid var(--border);margin-bottom:7px}
+.att-entry.present{background:var(--green-l);border-color:var(--green-b)}
+.att-entry.absent{background:var(--red-l);border-color:var(--red-b)}
+.att-entry.medical{background:var(--blue-l);border-color:var(--blue-b)}
+.att-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.att-entry.present .att-dot{background:var(--green)}
+.att-entry.absent .att-dot{background:var(--red)}
+.att-entry.medical .att-dot{background:var(--blue)}
+.att-info{flex:1}
+.att-date{font-size:13px;font-weight:600}
+.att-sess{font-size:12px;margin-top:1px;opacity:.75}
+.att-entry.present .att-date,.att-entry.present .att-sess{color:var(--green-d)}
+.att-entry.absent .att-date,.att-entry.absent .att-sess{color:var(--red-d)}
+.att-entry.medical .att-date,.att-entry.medical .att-sess{color:var(--blue-d)}
+.att-right{text-align:right}
+.att-status{font-size:12px;font-weight:700}
+.att-hrs{font-size:12px;margin-top:2px;opacity:.8}
+.srch-wrap{margin-bottom:10px}
+.srch-wrap input{margin-top:0}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 1.4s infinite;margin-right:5px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-icon">✓</div>
+      <h1>AttendEase</h1>
+    </div>
+    <p>Smart classroom attendance &amp; NCC hour tracking</p>
+  </div>
+  <div id="root"></div>
+</div>
+<script>
+// ─────────────────────────────────────────────
+// CONFIG — 5 instructor codes
+// Each code: used by instructor to register (once), then also used by students to link to that instructor
+// ─────────────────────────────────────────────
+const CODES_KEY = 'ae6_codes';
+const DEFAULT_CODES = [
+  {code:'INST188969', instructorId:null},
+  {code:'INST074493', instructorId:null},
+  {code:'INST128783', instructorId:null},
+  {code:'INST188907', instructorId:null},
+  {code:'INST2024',   instructorId:null}
+];
+
+function loadCodes(){
+  try{ const s=localStorage.getItem(CODES_KEY); if(s) return JSON.parse(s); } catch{}
+  saveCodes(DEFAULT_CODES); return JSON.parse(JSON.stringify(DEFAULT_CODES));
+}
+function saveCodes(c){ localStorage.setItem(CODES_KEY,JSON.stringify(c)); }
+
+// ─────────────────────────────────────────────
+// DB
+// users: {id: {id,name,password,role,instructorId}}
+// sessions: [{id,title,date,dayName,instructorId,attendance:{stuId:'present'|'absent'|'medical'},customHours,closed}]
+// ─────────────────────────────────────────────
+const LS = {
+  get(k){try{return JSON.parse(localStorage.getItem('ae6_'+k))}catch{return null}},
+  set(k,v){localStorage.setItem('ae6_'+k,JSON.stringify(v))}
+};
+let DB = {
+  users:    LS.get('users')    || {},
+  sessions: LS.get('sessions') || [],
+  active:   LS.get('active')   || {}   // {instructorId: sessionObj|null}
+};
+function saveDB(){ LS.set('users',DB.users); LS.set('sessions',DB.sessions); LS.set('active',DB.active); }
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let ST = {
+  screen:'home', role:'student', tab:'login',
+  user:null, msg:'', msgOk:false,
+  ca:0, cb:0,
+  instrPanel:'mark',      // 'mark'|'check'|'ncc'
+  expandedDays:{},
+  studSubscreen:'dash',   // 'dash'|'verify'
+  markSearch:'', checkSearch:'', nccSearch:'',
+  customHours:''
+};
+
+function genCaptcha(){ ST.ca=Math.floor(Math.random()*12)+1; ST.cb=Math.floor(Math.random()*12)+1; }
+
+// ─────────────────────────────────────────────
+// NCC HOUR CALC
+// ─────────────────────────────────────────────
+function getHoursForSession(session, status){
+  if(status==='medical') return 0;
+  const day = session.dayName; // 'Saturday','Sunday', or other
+  if(day==='Saturday'){
+    return status==='present' ? 3 : -3;
+  } else if(day==='Sunday'){
+    return status==='present' ? 4 : -4;
+  } else {
+    // weekday: customHours if present, else 0
+    if(status==='present' && session.customHours > 0) return session.customHours;
+    if(status==='absent' && session.customHours > 0) return -session.customHours;
+    return 0;
+  }
+}
+
+function calcNccHours(studentId, instructorId){
+  const closed = DB.sessions.filter(s=>s.instructorId===instructorId && s.closed);
+  let total = 0;
+  closed.forEach(s=>{
+    const status = s.attendance ? s.attendance[studentId] : null;
+    if(status) total += getHoursForSession(s, status);
+  });
+  return total;
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function render(){ document.getElementById('root').innerHTML = buildView(); bindAll(); }
+
+function buildView(){
+  if(ST.screen==='dash'){
+    if(ST.user.role==='instructor') return instrDash();
+    if(ST.studSubscreen==='verify') return studVerify();
+    return studDash();
+  }
+  return homeView();
+}
+
+// ─────────────────────────────────────────────
+// HOME
+// ─────────────────────────────────────────────
+function homeView(){
+  return `<div class="card">
+    <div class="toggle">
+      <button class="tog ${ST.role==='student'?'ab':''}" onclick="setRole('student')">🎓 Student</button>
+      <button class="tog ${ST.role==='instructor'?'ab':''}" onclick="setRole('instructor')">📋 Instructor</button>
+    </div>
+    <div class="ctitle">${ST.role==='instructor'?'Instructor Portal':'Student Portal'}</div>
+    <div class="csub">${ST.role==='instructor'?'Manage sessions, mark attendance & NCC hours':'View your attendance and NCC hours'}</div>
+    <div class="toggle">
+      <button class="tog ${ST.tab==='login'?'ag':''}" onclick="setTab('login')">Login</button>
+      <button class="tog ${ST.tab==='reg'?'ag':''}" onclick="setTab('reg')">Register</button>
+    </div>
+    ${ST.tab==='login'?loginForm():regForm()}
+    ${ST.msg?`<div class="${ST.msgOk?'ok':'err'}">${ST.msg}</div>`:''}
+  </div>`;
+}
+
+function loginForm(){
+  return `
+    <label>Your ID</label>
+    <input id="lid" type="text" placeholder="Your ID" autocomplete="off">
+    <label>Password</label>
+    <input id="lpwd" type="password" placeholder="Password">
+    <label>Captcha — ${ST.ca} + ${ST.cb} = ?</label>
+    <div class="cap-box">
+      <span class="cap-q">${ST.ca} + ${ST.cb} = ?</span>
+      <button class="cap-ref" onclick="genCaptcha();render()">↻</button>
+    </div>
+    <input id="lcap" type="number" placeholder="Answer" style="margin-top:8px">
+    <button class="btn green" onclick="doLogin()">Login →</button>`;
+}
+
+function regForm(){
+  const isInstr = ST.role==='instructor';
+  return `
+    <label>Choose a Unique ID</label>
+    <input id="rid" type="text" placeholder="e.g. roll number, STU001" autocomplete="off">
+    <label>Full Name</label>
+    <input id="rname" type="text" placeholder="Your full name">
+    <label>Password</label>
+    <input id="rpwd" type="password" placeholder="Choose a password">
+    <label>Confirm Password</label>
+    <input id="rpwd2" type="password" placeholder="Repeat password">
+    <label>${isInstr?'Instructor Registration Code':'Group / Instructor Code'}</label>
+    <input id="icode" type="text" placeholder="${isInstr?'Your unique instructor code':'Code given by your instructor'}">
+    <div style="font-size:12px;color:var(--muted);margin-top:5px">${isInstr?'Each instructor code can only be used once to register as instructor.':'Enter the code provided by your instructor to join their group.'}</div>
+    <button class="btn green" onclick="doReg()">Create Account</button>`;
+}
+
+// ─────────────────────────────────────────────
+// STUDENT DASHBOARD
+// ─────────────────────────────────────────────
+function studDash(){
+  const u = ST.user;
+  const instr = DB.users[u.instructorId];
+  const closed = DB.sessions.filter(s=>s.instructorId===u.instructorId && s.closed);
+  const statuses = closed.map(s=>(s.attendance||{})[u.id]);
+  const present  = statuses.filter(x=>x==='present').length;
+  const absent   = statuses.filter(x=>x==='absent').length;
+  const medical  = statuses.filter(x=>x==='medical').length;
+  const counted  = present+absent; // medical not counted in %
+  const pct      = counted ? Math.round(present/counted*100) : 0;
+  const pctColor = pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const nccHrs   = calcNccHours(u.id, u.instructorId);
+
+  return `<div class="card">
+    <button class="back-btn" onclick="logout()">← Logout</button>
+    <div class="ctitle">${u.name}</div>
+    <div class="csub">ID: <strong>${u.id}</strong>${instr?' · '+instr.name:''}</div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num" style="color:var(--green)">${present}</div><div class="stat-lbl">Present</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--red)">${absent}</div><div class="stat-lbl">Absent</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--blue-d)">${medical}</div><div class="stat-lbl">Medical</div></div>
+    </div>
+    <div class="pbar"><div class="pfill" style="width:${pct}%;background:${pctColor}"></div></div>
+    <div class="plbl">${pct>=75?'✅':'⚠️'} ${pct}% attendance (medical leave not counted)</div>
+
+    <div style="background:var(--surface);border-radius:var(--rsm);padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:13px;color:var(--muted);font-weight:500">NCC Hours Total</div>
+      <div style="font-size:22px;font-weight:700;color:${nccHrs>=0?'var(--green-d)':'var(--red-d)'}">${nccHrs>=0?'+':''}${nccHrs} hrs</div>
+    </div>
+
+    <button class="btn blue" onclick="ST.studSubscreen='verify';render()">🔍 Verify Attendance</button>
+
+    <hr class="divider">
+    <div class="stitle">Recent Sessions</div>
+    ${closed.length===0?`<div class="no-data">No sessions recorded yet.</div>`:`
+    <div class="slist">
+      ${closed.slice().reverse().slice(0,8).map(s=>{
+        const st=(s.attendance||{})[u.id]||'—';
+        const hrs=st!=='—'?getHoursForSession(s,st):0;
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-size:14px;font-weight:500">${s.title}</div>
+            <div style="font-size:12px;color:var(--muted)">${s.date} · ${s.dayName}</div>
+          </div>
+          <div style="text-align:right">
+            <span class="badge ${st}">${st==='present'?'✓ Present':st==='absent'?'✗ Absent':st==='medical'?'⚕ Medical':'—'}</span>
+            ${hrs!==0?`<div style="font-size:11px;color:${hrs>0?'var(--green-d)':'var(--red-d)'};margin-top:3px;font-weight:600">${hrs>0?'+':''}${hrs} hrs</div>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// STUDENT VERIFY VIEW
+// ─────────────────────────────────────────────
+function studVerify(){
+  const u = ST.user;
+  const closed = DB.sessions.filter(s=>s.instructorId===u.instructorId && s.closed);
+  const statuses = closed.map(s=>(s.attendance||{})[u.id]);
+  const present  = statuses.filter(x=>x==='present').length;
+  const absent   = statuses.filter(x=>x==='absent').length;
+  const medical  = statuses.filter(x=>x==='medical').length;
+  const counted  = present+absent;
+  const pct      = counted ? Math.round(present/counted*100) : 0;
+  const pctColor = pct>=75?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  const nccHrs   = calcNccHours(u.id, u.instructorId);
+
+  return `<div class="card">
+    <button class="back-btn" onclick="ST.studSubscreen='dash';render()">← Back</button>
+    <div class="pct-big" style="color:${pctColor}">${pct}%</div>
+    <div class="pct-lbl">Attendance Rate &nbsp;·&nbsp; Medical leave not counted</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num" style="color:var(--green)">${present}</div><div class="stat-lbl">Present</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--red)">${absent}</div><div class="stat-lbl">Absent</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--blue-d)">${medical}</div><div class="stat-lbl">Medical</div></div>
+    </div>
+    <div style="background:var(--surface);border-radius:var(--rsm);padding:11px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem">
+      <span style="font-size:13px;color:var(--muted);font-weight:500">Total NCC Hours</span>
+      <span style="font-size:20px;font-weight:700;color:${nccHrs>=0?'var(--green-d)':'var(--red-d)'}">${nccHrs>=0?'+':''}${nccHrs} hrs</span>
+    </div>
+    ${pct<75?`<div class="err" style="margin-top:0;margin-bottom:12px">⚠️ Below 75% attendance threshold.</div>`:''}
+    <hr class="divider">
+    <div class="stitle">All Sessions — Date Wise</div>
+    ${closed.length===0?`<div class="no-data">No sessions yet.</div>`:`
+    <div class="slist" style="max-height:450px">
+      ${closed.slice().reverse().map(s=>{
+        const st=(s.attendance||{})[u.id]||null;
+        const cls=st||'';
+        const hrs=st?getHoursForSession(s,st):0;
+        return `<div class="att-entry ${cls}">
+          <div class="att-dot"></div>
+          <div class="att-info">
+            <div class="att-date">${s.date} — ${s.dayName}</div>
+            <div class="att-sess">${s.title}</div>
+          </div>
+          <div class="att-right">
+            <div class="att-status">${st==='present'?'✓ Present':st==='absent'?'✗ Absent':st==='medical'?'⚕ Medical':'Not marked'}</div>
+            ${hrs!==0?`<div class="att-hrs">${hrs>0?'+':''}${hrs} hrs</div>`:''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// INSTRUCTOR DASHBOARD
+// ─────────────────────────────────────────────
+function instrDash(){
+  const u = ST.user;
+  const myStudents = Object.values(DB.users).filter(x=>x.role==='student'&&x.instructorId===u.id);
+  const closed = DB.sessions.filter(s=>s.instructorId===u.id&&s.closed);
+  const active = DB.active[u.id];
+
+  return `<div class="card">
+    <button class="back-btn" onclick="logout()">← Logout${active&&!active.closed?' (saves & ends session)':''}</button>
+    <div class="ctitle">📋 ${u.name}</div>
+    <div class="csub">Instructor &nbsp;·&nbsp; ${myStudents.length} students &nbsp;·&nbsp; ${closed.length} sessions</div>
+
+    <div class="inav">
+      <button class="inav-btn ${ST.instrPanel==='mark'?'active-mark':''}" onclick="ST.instrPanel='mark';render()">
+        <div class="icon">✏️</div><div class="label">Mark Attendance</div>
+      </button>
+      <button class="inav-btn ${ST.instrPanel==='check'?'active-check':''}" onclick="ST.instrPanel='check';render()">
+        <div class="icon">📅</div><div class="label">Check Attendance</div>
+      </button>
+      <button class="inav-btn ${ST.instrPanel==='ncc'?'active-ncc':''}" onclick="ST.instrPanel='ncc';render()">
+        <div class="icon">⏱️</div><div class="label">NCC Hours</div>
+      </button>
+    </div>
+
+    ${ST.instrPanel==='mark' ? markPanel(active, myStudents)
+    : ST.instrPanel==='check' ? checkPanel(closed, myStudents)
+    : nccPanel(myStudents, u.id)}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────
+// MARK ATTENDANCE PANEL
+// ─────────────────────────────────────────────
+function markPanel(active, myStudents){
+  if(active&&!active.closed){
+    // Marking in progress
+    const q = ST.markSearch.toLowerCase();
+    const filtered = myStudents.filter(s=>!q||s.name.toLowerCase().includes(q)||s.id.toLowerCase().includes(q));
+    const presentCount = Object.values(active.attendance||{}).filter(x=>x==='present').length;
+    const absentCount  = Object.values(active.attendance||{}).filter(x=>x==='absent').length;
+    const medCount     = Object.values(active.attendance||{}).filter(x=>x==='medical').length;
+    const isWeekend = active.dayName==='Saturday'||active.dayName==='Sunday';
+
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="font-size:11px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px"><span class="live-dot"></span>Marking Session</div>
+          <div style="font-size:15px;font-weight:700">${active.title}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">${active.date} · ${active.dayName}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;color:var(--muted)">✅ ${presentCount} &nbsp; ❌ ${absentCount} &nbsp; 💙 ${medCount}</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:var(--surface);border-radius:var(--rsm)">
+        🟢 = Present &nbsp;&nbsp; 🔴 = Absent &nbsp;&nbsp; 🔵 = Medical Leave
+      </div>
+
+      <div class="srch-wrap">
+        <input type="text" placeholder="🔍 Search student…" value="${ST.markSearch}" oninput="ST.markSearch=this.value;render()">
+      </div>
+
+      ${myStudents.length===0
+        ? `<div class="info-box">No students registered under you yet.</div>`
+        : `<div class="slist" style="max-height:300px">
+            ${filtered.map(s=>{
+              const status=(active.attendance||{})[s.id]||null;
+              const cls=status?'is-'+status:'';
+              return `<div class="stu-item ${cls}">
+                <div class="stu-info">
+                  <div class="stu-name">${s.name}</div>
+                  <div class="stu-id">${s.id}</div>
+                </div>
+                ${status?`<span class="status-label ${status}">${status==='present'?'Present':status==='absent'?'Absent':'Medical'}</span>`:''}
+                <div class="stu-actions">
+                  <button class="status-btn ${status==='present'?'active-present':''}" onclick="setStatus('${s.id}','present')" title="Present">🟢</button>
+                  <button class="status-btn ${status==='absent'?'active-absent':''}" onclick="setStatus('${s.id}','absent')" title="Absent">🔴</button>
+                  <button class="status-btn ${status==='medical'?'active-medical':''}" onclick="setStatus('${s.id}','medical')" title="Medical">🔵</button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>`}
+
+      ${!isWeekend?`
+        <div class="hours-box">
+          <div class="htitle">⏱️ NCC Hours for this Session</div>
+          <div class="hinfo">It's a weekday. Enter how many NCC hours to credit for present students (absent = same hours deducted).</div>
+          <div class="hours-row">
+            <input type="number" id="custom-hours" min="0" max="24" placeholder="e.g. 2" value="${active.customHours||''}" oninput="active.customHours=parseFloat(this.value)||0;DB.active[ST.user.id]=active;saveDB()">
+            <span style="font-size:13px;color:var(--muted)">hours</span>
+          </div>
+        </div>
+      `:`<div style="font-size:12px;color:var(--muted);padding:8px 12px;background:var(--green-l);border-radius:var(--rsm);margin-top:10px">📅 ${active.dayName}: Present = +${active.dayName==='Saturday'?3:4} hrs, Absent = ${active.dayName==='Saturday'?-3:-4} hrs, Medical = 0 hrs</div>`}
+
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn red" onclick="leaveWithoutMarking()">Leave Without Marking</button>
+        <button class="btn green" onclick="saveSession()">💾 Save Attendance</button>
+      </div>
+      ${ST.msg?`<div class="${ST.msgOk?'ok':'err'}" style="margin-top:8px">${ST.msg}</div>`:''}
+    `;
+  }
+
+  // No active session — start one
+  return `
+    <div class="stitle">Start New Attendance Session</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Enter a session title. The day of week is auto-detected for NCC hour calculation.</div>
+    <label>Session Title</label>
+    <input id="stitle" type="text" placeholder="e.g. Parade — Week 5">
+    ${ST.msg?`<div class="${ST.msgOk?'ok':'err'}">${ST.msg}</div>`:''}
+    <button class="btn green" onclick="startSession()">▶ Start Session</button>
+  `;
+}
+
+// ─────────────────────────────────────────────
+// CHECK ATTENDANCE PANEL
+// ─────────────────────────────────────────────
+function checkPanel(closed, myStudents){
+  const q = ST.checkSearch.toLowerCase();
+  if(closed.length===0) return `<div class="stitle">Check Attendance</div><div class="no-data">No completed sessions yet.</div>`;
+
+  return `
+    <div class="stitle">Check Attendance — ${closed.length} Sessions</div>
+    <div class="srch-wrap">
+      <input type="text" placeholder="🔍 Search by session title or date…" value="${ST.checkSearch}" oninput="ST.checkSearch=this.value;render()">
+    </div>
+    <div class="slist">
+      ${closed.filter(s=>!q||s.title.toLowerCase().includes(q)||s.date.includes(q)).slice().reverse().map(s=>{
+        const att=s.attendance||{};
+        const pCount=Object.values(att).filter(x=>x==='present').length;
+        const aCount=Object.values(att).filter(x=>x==='absent').length;
+        const mCount=Object.values(att).filter(x=>x==='medical').length;
+        const open=ST.expandedDays[s.id];
+        return `<div class="day-card">
+          <div class="day-head" onclick="toggleDay('${s.id}')">
+            <div class="day-head-left">
+              <div class="day-title">${s.date} &nbsp;<span style="font-size:12px;font-weight:400;color:var(--muted)">${s.dayName}</span></div>
+              <div class="day-sub">${s.title}${s.customHours?` · ${s.customHours}h NCC`:''}</div>
+            </div>
+            <div class="day-counts">
+              <span class="badge present">✓${pCount}</span>
+              <span class="badge absent">✗${aCount}</span>
+              <span class="badge medical">⚕${mCount}</span>
+              <span style="font-size:12px;color:var(--muted)">${open?'▲':'▼'}</span>
+            </div>
+          </div>
+          ${open?`<div class="day-body open">
+            ${myStudents.length===0?'<div class="no-data">No students.</div>':
+              myStudents.map(st=>{
+                const status=att[st.id]||null;
+                return `<div class="day-stu-row">
+                  <div>
+                    <span style="font-weight:500">${st.name}</span>
+                    <span style="font-size:12px;color:var(--muted);margin-left:7px">${st.id}</span>
+                  </div>
+                  ${status?`<span class="badge ${status}">${status==='present'?'✓ Present':status==='absent'?'✗ Absent':'⚕ Medical'}</span>`:'<span style="font-size:12px;color:var(--faint)">Not marked</span>'}
+                </div>`;
+              }).join('')}
+          </div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ─────────────────────────────────────────────
+// NCC HOURS PANEL
+// ─────────────────────────────────────────────
+function nccPanel(myStudents, instrId){
+  const q = ST.nccSearch.toLowerCase();
+  const filtered = myStudents.filter(s=>!q||s.name.toLowerCase().includes(q)||s.id.toLowerCase().includes(q));
+  const sorted = [...filtered].sort((a,b)=>calcNccHours(b.id,instrId)-calcNccHours(a.id,instrId));
+
+  return `
+    <div class="stitle">NCC Hours — All Students</div>
+    <div class="srch-wrap">
+      <input type="text" placeholder="🔍 Search student…" value="${ST.nccSearch}" oninput="ST.nccSearch=this.value;render()">
+    </div>
+    ${myStudents.length===0?`<div class="no-data">No students registered under you yet.</div>`:`
+    <div class="slist">
+      ${sorted.map((s,i)=>{
+        const hrs=calcNccHours(s.id,instrId);
+        return `<div class="ncc-row">
+          <div>
+            <div style="font-weight:500;font-size:14px">${s.name}</div>
+            <div style="font-size:12px;color:var(--muted)">${s.id}</div>
+          </div>
+          <div class="ncc-hours ${hrs>0?'positive':hrs<0?'negative':''}">${hrs>0?'+':''}${hrs} hrs</div>
+        </div>`;
+      }).join('')}
+    </div>`}`;
+}
+
+// ─────────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────────
+function setRole(r){ST.role=r;ST.msg='';render()}
+function setTab(t){ST.tab=t;ST.msg='';render()}
+
+function doLogin(){
+  const id=val('lid'), pwd=val('lpwd'), cap=parseInt(val('lcap'));
+  if(!id||!pwd) return msg('Please fill all fields.');
+  if(cap!==ST.ca+ST.cb){genCaptcha();return msg('Captcha incorrect. Try again.')}
+  const u=DB.users[id];
+  if(!u||u.password!==pwd) return msg('Wrong ID or password.');
+  if(ST.role==='instructor'&&u.role!=='instructor') return msg('This ID is not an instructor account.');
+  if(ST.role==='student'&&u.role!=='student') return msg('This ID is not a student account.');
+  ST.user=u; ST.screen='dash'; ST.msg=''; ST.instrPanel='mark'; ST.studSubscreen='dash'; render();
+}
+
+function doReg(){
+  const id=val('rid'), name=val('rname'), pwd=val('rpwd'), pwd2=val('rpwd2'), code=val('icode').trim();
+  if(!id||!name||!pwd||!pwd2||!code) return msg('Please fill all fields.');
+  if(pwd!==pwd2) return msg('Passwords do not match.');
+  if(id.length<3) return msg('ID must be at least 3 characters.');
+  if(DB.users[id]) return msg(`ID "${id}" is already taken.`);
+
+  const codes = loadCodes();
+  const entry = codes.find(c=>c.code===code);
+  if(!entry) return msg('Invalid code. Please check and try again.');
+
+  if(ST.role==='instructor'){
+    // Code must not already have an instructor
+    if(entry.instructorId!==null) return msg('This code has already been used by an instructor. Each code can only be used once to register as instructor.');
+    // Register instructor and claim code
+    DB.users[id]={id,name,password:pwd,role:'instructor',instructorId:id};
+    entry.instructorId=id;
+    saveCodes(codes);
+    saveDB();
+    msg('Instructor account created! You can now login.',true);
+    setTimeout(()=>{ST.tab='login';ST.msg='';render()},1500);
+  } else {
+    // Student: code must have an instructor linked already
+    if(entry.instructorId===null) return msg('This code has not been claimed by an instructor yet. Ask your instructor to register first.');
+    // Register student under that instructor
+    DB.users[id]={id,name,password:pwd,role:'student',instructorId:entry.instructorId};
+    saveDB();
+    msg('Account created! You can now login.',true);
+    setTimeout(()=>{ST.tab='login';ST.msg='';render()},1500);
+  }
+}
+
+function startSession(){
+  const title=val('stitle');
+  if(!title) return msg('Please enter a session title.');
+  const now=new Date();
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dayName=days[now.getDay()];
+  const date=now.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  if(!DB.active) DB.active={};
+  DB.active[ST.user.id]={
+    id:Date.now(), title, date, dayName,
+    instructorId:ST.user.id,
+    attendance:{}, customHours:0, closed:false
+  };
+  saveDB(); ST.msg=''; render();
+}
+
+function setStatus(stuId, status){
+  const active=DB.active[ST.user.id];
+  if(!active||active.closed) return;
+  if(!active.attendance) active.attendance={};
+  if(active.attendance[stuId]===status){
+    // toggle off
+    delete active.attendance[stuId];
+  } else {
+    active.attendance[stuId]=status;
+  }
+  saveDB(); render();
+}
+
+function saveSession(){
+  const active=DB.active[ST.user.id];
+  if(!active) return;
+  active.closed=true;
+  DB.sessions.push({...active});
+  DB.active[ST.user.id]=null;
+  saveDB(); ST.msg=''; render();
+}
+
+function leaveWithoutMarking(){
+  // Discard session — not saved to history, day not counted
+  DB.active[ST.user.id]=null;
+  saveDB(); ST.msg=''; render();
+}
+
+function toggleDay(id){ ST.expandedDays[id]=!ST.expandedDays[id]; render(); }
+
+function logout(){
+  if(ST.user&&ST.user.role==='instructor'){
+    const active=DB.active&&DB.active[ST.user.id];
+    if(active&&!active.closed){
+      // Auto-save on logout
+      active.closed=true;
+      DB.sessions.push({...active});
+      DB.active[ST.user.id]=null;
+      saveDB();
+    }
+  }
+  ST.screen='home'; ST.user=null; ST.msg=''; ST.markSearch=''; ST.checkSearch=''; ST.nccSearch=''; ST.studSubscreen='dash'; render();
+}
+
+function msg(m,ok=false){ST.msg=m;ST.msgOk=ok;render()}
+function val(id){const e=document.getElementById(id);return e?e.value.trim():''}
+
+function bindAll(){
+  [['lid',doLogin],['lpwd',doLogin],['lcap',doLogin],
+   ['rid',doReg],['rname',doReg],['rpwd',doReg],['rpwd2',doReg],['icode',doReg],
+   ['stitle',startSession]
+  ].forEach(([id,fn])=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('keydown',e=>{if(e.key==='Enter')fn()});
+  });
+}
+
+genCaptcha();
+render();
+</script>
+</body>
+</html>
